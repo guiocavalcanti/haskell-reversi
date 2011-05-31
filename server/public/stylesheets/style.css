@@ -1,0 +1,28 @@
+#board {
+  width: 500px;
+  height: 500px;
+  background: url("../images/board.png");
+}
+
+#board .dark,
+#board .light,
+#board .position {
+  width: 58px;
+  height: 58px;
+}
+
+#board .position {
+  float: left;
+  margin-top: 4px;
+  margin-left: 4px;
+}
+
+#board .dark {
+  background: url("../images/black.png") no-repeat center;
+  cursor: pointer;
+}
+
+#board .light {
+  background: url("../images/white.png") no-repeat center;
+  cursor: pointer;
+}

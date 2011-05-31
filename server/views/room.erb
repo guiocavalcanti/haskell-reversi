@@ -1,1 +1,21 @@
-<%= @teste %>
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title></title>
+<link media="all" rel="stylesheet" href="stylesheets/style.css" type="text/css" />
+<script src="javascripts/jquery.js" type="text/javascript"></script>
+<script src="javascripts/app.js" type="text/javascript"></script>
+<script type="text/javascript">
+  $(function(){
+    var board = $.parseJSON(<%= @room[:board] %>);
+    $("#board").buildBoard(board);
+  });
+</script>
+</head>
+<body>
+<div id="board"></div>
+<form action="<%= @room[:room_id] %>/play">
+</form>
+</body>
+</html>

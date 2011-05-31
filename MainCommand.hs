@@ -36,18 +36,23 @@ moveR :: Result Move -> Move
 moveR (Text.JSON.Ok m) = m
 
 main = do
-  (boardJS:moveJS:args) <- getArgs
-  let board = (boardR (decode boardJS :: Result Board) )
-  let m = (moveR (decode moveJS :: Result Move))
+  (cmd:args) <- getArgs
 
-  if check board m
+  if cmd == "play"
     then do
-      let new = flipChains (move board m) (fst m)
-      if gameOver new
+      let board = (boardR (decode (args!!0) :: Result Board) )
+      let m = (moveR (decode (args!!1) :: Result Move))
+
+      if check board m
         then do
-          let result = encode (toJSObject [("result", (winner new))])
-          putStrLn result
-        else do
-          putStrLn (encode new)
-    else
-      putStrLn (encode board)
+          let new = flipChains (move board m) (fst m)
+          if gameOver new
+            then do
+              let result = encode (toJSObject [("result", (winner new))])
+              putStrLn result
+            else do
+              putStrLn (encode new)
+        else
+          putStrLn (encode board)
+    else do
+      putStrLn (encode makeBoard)
