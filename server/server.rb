@@ -4,6 +4,9 @@ class Reversi < Sinatra::Base
 
   Tilt.register :erb, Tilt[:erubis]
 
+  @@symbol = { "black" => "X", "white" => "O", "empty" => "E" }
+  @@color = { "X" => "black", "O" => "white", "E" => "empty" }
+
   # Shows the login page
   get '/' do
     erubis :index
@@ -13,10 +16,12 @@ class Reversi < Sinatra::Base
   post '/' do
     db = connect_db
     room_id = generate_name
+    color = @@symbol[params[:color]]
 
     db.transaction do
       db[room_id] = []
-      db[room_id] << { :color => params[:color], :board => new_board, :id => room_id }
+      db[room_id] << { :color => color,
+                       :board => new_board, :id => room_id, :first => true }
     end
 
     redirect to("/#{room_id}")
@@ -24,24 +29,30 @@ class Reversi < Sinatra::Base
 
   # Builds a new board
   get %r{(\w{4})$} do |room_id|
-    @room = load_room_if_possible room_id
+    db = connect_db
+    @room = load_room_if_possible room_id, db
+
+    if @room.fetch(:first, false)
+      db.transaction do
+        opposite = (@room[:color].eql? "X") ? "O" : "X"
+        db[room_id] << @room.merge({:first => false, :color => opposite })
+      end
+    end
+
     erubis :room
   end
 
   # Make a move
   post %r{(\w{4})\/play$} do |room_id|
     db = connect_db
-    @room = load_room_if_possible db, room_id
+    @room = load_room_if_possible room_id, db
 
-    # If isnt your time, you wont play
-    return @room[:board] if @room[:color] == params[:color]
-
-    make_move @room[:board], @params[:move]
+    make_move params[:board], params[:move]
   end
 
   protected
 
-  def load_room_if_possible(db, room_id)
+  def load_room_if_possible(room_id, db = nil)
     db = connect_db unless db
     @room = {}
     db.transaction do
@@ -65,7 +76,8 @@ class Reversi < Sinatra::Base
 
   # Makes a move on the given board
   def make_move(board, move)
-    `reversi-cmd #{board} #{move}`
+    result = `reversi-cmd play '#{board}' '#{move}'`
+    result
   end
 
   # Database setup

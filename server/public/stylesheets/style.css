@@ -1,15 +1,22 @@
+body {
+  font-family: Heveltica, sans-serif;
+}
+
 #board {
   width: 500px;
   height: 500px;
   background: url("../images/board.png");
 }
 
-#board .dark,
-#board .light,
+#board .X,
+#board .O,
+#board .E,
 #board .position {
   width: 58px;
   height: 58px;
 }
+
+#board .E { cursor: pointer; }
 
 #board .position {
   float: left;
@@ -17,12 +24,36 @@
   margin-left: 4px;
 }
 
-#board .dark {
+#board .X {
   background: url("../images/black.png") no-repeat center;
-  cursor: pointer;
+  cursor: not-allowed;
 }
 
-#board .light {
+#board .O {
   background: url("../images/white.png") no-repeat center;
-  cursor: pointer;
+  cursor: not-allowed;
+}
+
+#control {
+  background: url("../images/white.png") no-repeat center;
+  width: 58px;
+  height: 58px;
+}
+
+#control.X {
+  background: url("../images/black.png") no-repeat center;
+  width: 58px;
+  height: 58px;
+}
+
+.winner {
+  width: 100px;
+  margin-bottom: 10px;
+  clear: both;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  background-color: #84D0EA;
+  color: white;
+  font-weight: bold;
 }
