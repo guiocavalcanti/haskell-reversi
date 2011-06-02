@@ -57,3 +57,19 @@ body {
   color: white;
   font-weight: bold;
 }
+
+.winner.X {
+  background: #84D0EA url("../images/black.png") no-repeat center right;
+  height: 18px;
+  width: 118px;
+  padding: 30px 10px;
+  text-align: left;
+}
+
+.winner.O {
+  background: #84D0EA url("../images/white.png") no-repeat center right;
+  height: 18px;
+  width: 118px;
+  padding: 30px 10px;
+  text-align: left;
+}

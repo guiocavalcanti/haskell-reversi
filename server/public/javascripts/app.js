@@ -31,7 +31,7 @@
         $this.find(".E").click(function(){
           var url = "/" + room_id + "/play";
           var $state = $(this).data("state");
-          var move = [[$state[0][0],$state[0][1]],$("input:checked").val()]
+          var move = [[$state[0][0],$state[0][1]],player]
           var board = $.toJSON($this.data("board"));
           var data = {
             "board" : board
@@ -75,6 +75,34 @@
     return this.each(function(){
         $this = $(this);
         $this.toggleClass("X")
+    });
+  }
+
+  $.fn.multiplayer = function(options){
+    var config = {}
+    config = $.extend(options, config);
+
+    return this.each(function(){
+        $this = $(this);
+
+        config.channel.bind("move", function(data){
+
+          // When there is a winner
+          if(data.hasOwnProperty("result")){
+            var $disclaimer = $("<div/>", { "class" : "winner" });
+            $disclaimer.html("Winner:");
+            $disclaimer.addClass(data.result);
+            $this.before($disclaimer);
+            $this.find("> *").remove();
+          }else{
+            $this.find("> *").remove();
+            $this.buildBoard(data);
+            $this.setupFor(config.player, config.room_id, function(data){});
+          }
+        });
+
+        $this.buildBoard(config.board);
+        $this.setupFor(config.player, config.room_id, function(data){});
     });
   }
 

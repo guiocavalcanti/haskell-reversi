@@ -47,7 +47,14 @@ class Reversi < Sinatra::Base
     db = connect_db
     @room = load_room_if_possible room_id, db
 
-    make_move params[:board], params[:move]
+    result = make_move params[:board], params[:move]
+
+    Pusher["private-#{room_id}"].trigger("move", result)
+  end
+
+  post "/pusher/auth" do
+    response = Pusher[params[:channel_name]].authenticate(params[:socket_id])
+    response.to_json
   end
 
   protected

@@ -6,36 +6,28 @@
 <link media="all" rel="stylesheet" href="stylesheets/style.css" type="text/css" />
 <script src="javascripts/jquery.js" type="text/javascript"></script>
 <script src="javascripts/json.js" type="text/javascript"></script>
+<script src="http://js.pusherapp.com/1.8/pusher.min.js"></script>
 <script src="javascripts/app.js" type="text/javascript"></script>
 <script type="text/javascript">
   $(function(){
+    Pusher.log = function(message) {
+      if (console && console.log) console.log(arguments);
+    }
+
+    var pusher = new Pusher('61be5260c07cf1d9e396');
+    var channel = pusher.subscribe("private-<%= @room[:id] %>");
+
     var options = {
       player : "<%= @room[:color] %>",
       room_id : "<%= @room[:id] %>",
       board : $.parseJSON(<%= @room[:board] %>),
     }
 
-    if(options.player == "X"){
-      $("#X").attr("checked", "checked");
-    }else{
-      $("#O").attr("checked", "checked");
-    }
-
-    $("#board").startGame(options);
+    $("#board").multiplayer($.extend(options, { channel : channel }));
   });
 </script>
 </head>
 <body>
 <div id="board"></div>
-<form action="#">
-  <label for="white">
-    <img src="images/white.png" alt="" />
-  </label>
-  <input type="radio" id="O" name="color" value="O" />
-  <label for="black">
-    <img src="images/black.png" alt="" />
-  </label>
-  <input type="radio" id="X" name="color" value="X" />
-</form>
 </body>
 </html>
